@@ -1,8 +1,11 @@
 import 'package:e_commerce_app/View/auth/signup_view.dart';
+import 'package:e_commerce_app/View/home/home.dart';
 import 'package:e_commerce_app/component/applogo_widget.dart';
 import 'package:e_commerce_app/component/bgWidget.dart';
 import 'package:e_commerce_app/component/round_button.dart';
 import 'package:e_commerce_app/consts/images.dart';
+import 'package:e_commerce_app/controller/auth_controller.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -12,15 +15,24 @@ import '../../consts/colors.dart';
 import '../../consts/strings.dart';
 import '../../consts/styles.dart';
 
-class LoginView extends StatelessWidget {
+class LoginView extends StatefulWidget {
   const LoginView({
     super.key,
   });
 
   @override
+  State<LoginView> createState() => _LoginViewState();
+}
+
+class _LoginViewState extends State<LoginView> {
+  TextEditingController emailC = TextEditingController();
+  TextEditingController passwordC = TextEditingController();
+
+  @override
   Widget build(BuildContext context) {
     final w = MediaQuery.sizeOf(context).width;
     final h = MediaQuery.sizeOf(context).height;
+    var authController = Get.put(AuthController());
 
     return bgWidght(
         child: Scaffold(
@@ -46,7 +58,7 @@ class LoginView extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: Colors.white,
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(
                     color: Colors.black,
                     offset: Offset(0.0, 2.0), // Changes the shadow position
@@ -56,8 +68,16 @@ class LoginView extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  customTextField(title: email, hint: emailHint),
-                  customTextField(title: password, hint: passwordHint),
+                  customTextField(
+                      title: email,
+                      hint: emailHint,
+                      controller: emailC,
+                      isPass: false),
+                  customTextField(
+                      title: password,
+                      hint: passwordHint,
+                      controller: passwordC,
+                      isPass: true),
                   Align(
                     alignment: Alignment.bottomRight,
                     child: TextButton(
@@ -70,9 +90,25 @@ class LoginView extends StatelessWidget {
                   const SizedBox(
                     height: 5,
                   ),
-                  RoundButton(
-                    title: login,
-                    onTap: () {},
+                  Obx(
+                    () => RoundButton(
+                      loading: authController.loading.value,
+                      title: login,
+                      onTap: () async {
+                        if (emailC.text.isEmpty && passwordC.text.isEmpty) {
+                          VxToast.show(context,
+                              msg: 'Please fill',
+                              textColor: whiteColor,
+                              bgColor: redColor,
+                              showTime: 4000);
+                        } else {
+                          authController.loginMethod(
+                              context: context,
+                              email: emailC.text.trim(),
+                              password: passwordC.text.trim());
+                        }
+                      },
+                    ),
                   ),
                   const SizedBox(
                     height: 5,
@@ -86,13 +122,13 @@ class LoginView extends StatelessWidget {
                       btnColor: lightGolden,
                       title: singUp,
                       onTap: () {
-                        Get.to(SignupView());
+                        Get.to(const SignupView());
                       }),
                   const SizedBox(
                     height: 10,
                   ),
                   const Text(loginWith),
-                  SizedBox(
+                  const SizedBox(
                     height: 5,
                   ),
                   Row(
@@ -101,13 +137,13 @@ class LoginView extends StatelessWidget {
                       CircleAvatar(
                         child: Image.asset(icFacebookLogo),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
                       CircleAvatar(
                         child: Image.asset(icGoogleLogo),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
                       CircleAvatar(

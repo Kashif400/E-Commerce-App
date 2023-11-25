@@ -1,14 +1,23 @@
+import 'package:e_commerce_app/View/auth/login_view.dart';
+import 'package:e_commerce_app/View/category/item_detail.dart';
 import 'package:e_commerce_app/View/home/home.dart';
-import 'package:e_commerce_app/View/splash_view.dart';
+import 'package:e_commerce_app/View/profile/profile_edit_view.dart';
+import 'package:e_commerce_app/View/profile/profile_view.dart';
+import 'package:e_commerce_app/consts/firebase_const.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import 'View/auth/login_view.dart';
-import 'View/auth/signup_view.dart';
+import 'consts/colors.dart';
 import 'consts/strings.dart';
 import 'consts/styles.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -23,9 +32,13 @@ class MyApp extends StatelessWidget {
       title: appname,
       theme: ThemeData(
           scaffoldBackgroundColor: Colors.transparent,
-          appBarTheme: const AppBarTheme(color: Colors.transparent),
+          appBarTheme: const AppBarTheme(
+            iconTheme: IconThemeData(color: darkFontGrey),
+            elevation: 0.0,
+            backgroundColor: Colors.transparent,
+          ),
           fontFamily: regular),
-      home: const Home(),
+      home: currentUser != null ? Home() : LoginView(),
     );
   }
 }

@@ -5,16 +5,24 @@ import 'package:e_commerce_app/consts/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-Widget homeCardWidget({height, width, icon, String? title, onPressed}) {
-  return Column(
-    mainAxisAlignment: MainAxisAlignment.center,
+Widget featureCart({String? title, icon}) {
+  return Row(
     children: [
       Image.asset(
         icon,
-        width: 26,
+        width: 40,
+        fit: BoxFit.fill,
       ),
       10.heightBox,
-      title!.text.fontFamily(semibold).color(darkFontGrey).size(10).make()
+      title!.text.fontFamily(semibold).color(darkFontGrey).make()
     ],
-  ).box.rounded.white.size(width, height).shadowSm.make();
+  )
+      .box
+      .white
+      .width(200)
+      .margin(const EdgeInsets.symmetric(horizontal: 4))
+      .padding(const EdgeInsets.all(4))
+      .roundedSM
+      .outerShadowSm
+      .make();
 }

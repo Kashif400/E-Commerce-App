@@ -5,8 +5,13 @@ class CartView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(Colors.red.value);
+    print(Colors.black.value);
+    print(Colors.amber.value);
     return Container(
       color: Colors.grey,
+
+      // ignore: avoid_print
     );
   }
 }

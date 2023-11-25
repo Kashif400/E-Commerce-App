@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../consts/colors.dart';
 import '../consts/styles.dart';
 
-Widget customTextField({String? title, String? hint, controller}) {
+Widget customTextField({String? title, String? hint, controller, isPass}) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -13,6 +13,8 @@ Widget customTextField({String? title, String? hint, controller}) {
             fontFamily: semibold, fontSize: 16, color: redColor),
       ),
       TextFormField(
+        obscureText: isPass,
+        controller: controller,
         decoration: InputDecoration(
             hintText: hint,
             hintStyle:

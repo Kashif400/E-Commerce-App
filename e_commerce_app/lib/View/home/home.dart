@@ -1,5 +1,6 @@
 import 'package:e_commerce_app/View/category/category_view.dart';
 import 'package:e_commerce_app/View/profile/profile_view.dart';
+import 'package:e_commerce_app/component/exit_dialog_box.dart';
 import 'package:e_commerce_app/consts/colors.dart';
 import 'package:e_commerce_app/consts/images.dart';
 import 'package:e_commerce_app/consts/strings.dart';
@@ -42,27 +43,41 @@ class Home extends StatelessWidget {
           ),
           label: account),
     ];
-    var navBody = [HomeView(), CategoryView(), CartView(), ProfileView()];
+    var navBody = [
+      const HomeView(),
+      const CategoryView(),
+      const CartView(),
+      const ProfileView()
+    ];
     final HomeController homeController = Get.put(HomeController());
-    return Scaffold(
-      bottomNavigationBar: Obx(
-        () => BottomNavigationBar(
-          items: navbarItem,
-          currentIndex: homeController.currentIndex.value,
-          selectedItemColor: redColor,
-          selectedLabelStyle: const TextStyle(fontFamily: semibold),
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: whiteColor,
-          onTap: (value) {
-            homeController.currentIndex.value = value;
-          },
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (bool isDidPop) {
+        showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (context) => exitDialogBox(context));
+      },
+      child: Scaffold(
+        bottomNavigationBar: Obx(
+          () => BottomNavigationBar(
+            items: navbarItem,
+            currentIndex: homeController.currentIndex.value,
+            selectedItemColor: redColor,
+            selectedLabelStyle: const TextStyle(fontFamily: semibold),
+            type: BottomNavigationBarType.fixed,
+            backgroundColor: whiteColor,
+            onTap: (value) {
+              homeController.currentIndex.value = value;
+            },
+          ),
         ),
-      ),
-      body: Column(
-        children: [
-          Obx(() => Expanded(
-              child: navBody.elementAt(homeController.currentIndex.value)))
-        ],
+        body: Column(
+          children: [
+            Obx(() => Expanded(
+                child: navBody.elementAt(homeController.currentIndex.value)))
+          ],
+        ),
       ),
     );
   }

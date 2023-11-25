@@ -36,6 +36,12 @@ dependencies:
   cupertino_icons: ^1.0.2
   velocity_x: ^4.1.1
   get: ^4.6.6
+  firebase_core: ^2.22.0
+  firebase_auth: ^4.14.0
+  firebase_storage: ^11.5.1
+  cloud_firestore: ^4.13.1
+  image_picker: ^1.0.4
+  cached_network_image: ^3.3.0
 
 dev_dependencies:
   flutter_test:
@@ -63,6 +69,7 @@ flutter:
     - assets/
     - assets/images/
     - assets/icons/
+    - lib/services/category_model.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
