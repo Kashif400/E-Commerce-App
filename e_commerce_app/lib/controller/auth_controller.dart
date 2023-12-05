@@ -14,7 +14,7 @@ class AuthController extends GetxController {
   //login method
   Future<UserCredential?> loginMethod({email, password, context}) async {
     loading.value = true;
-    auth
+    await auth
         .signInWithEmailAndPassword(email: email, password: password)
         .then((value) {
       loading.value = false;
@@ -44,12 +44,12 @@ class AuthController extends GetxController {
     loading.value = true;
     await auth
         .createUserWithEmailAndPassword(email: email, password: password)
-        .then((value) {
+        .then((value) async {
       loading.value = false;
       //store data
       DocumentReference store =
           firestore.collection(userCollection).doc(currentUser!.uid);
-      store.set({
+      await store.set({
         'name': name,
         'password': password,
         'email': email,

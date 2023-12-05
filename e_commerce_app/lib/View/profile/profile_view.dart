@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app/View/auth/login_view.dart';
+import 'package:e_commerce_app/View/chat/message_user_view.dart';
+import 'package:e_commerce_app/View/order/order_view.dart';
 import 'package:e_commerce_app/View/profile/profile_edit_view.dart';
+import 'package:e_commerce_app/View/wishlist/wishlist_view.dart';
 import 'package:e_commerce_app/component/bgWidget.dart';
 import 'package:e_commerce_app/component/cart_detail_widget.dart';
 import 'package:e_commerce_app/consts/colors.dart';
@@ -91,27 +94,40 @@ class ProfileView extends StatelessWidget {
                 ),
               ),
               20.heightBox,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  cartWidget(
-                    count: "${data['cart_count']}",
-                    title: "in your cart",
-                    width: context.screenWidth / 3.4,
-                  ),
-                  cartWidget(
-                    count: "${data['wishlist_count']}",
-                    title: "in your wishList",
-                    width: context.screenWidth / 3.4,
-                  ),
-                  cartWidget(
-                    count: "${data['order_count']}",
-                    title: "in your order",
-                    width: context.screenWidth / 3.4,
-                  ),
-                ],
-              ).box.color(redColor).make(),
-
+              FutureBuilder(
+                future: FirestoreServices.getCounts(),
+                builder:
+                    (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else {
+                    print(snapshot.data);
+                    var countData = snapshot.data;
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        cartWidget(
+                          count: countData[0].toString(),
+                          title: "in your cart",
+                          width: context.screenWidth / 3.4,
+                        ),
+                        cartWidget(
+                          count: countData[1].toString(),
+                          title: "in your wishList",
+                          width: context.screenWidth / 3.4,
+                        ),
+                        cartWidget(
+                          count: countData[2].toString(),
+                          title: "in your order",
+                          width: context.screenWidth / 3.4,
+                        ),
+                      ],
+                    ).box.color(redColor).make();
+                  }
+                },
+              ),
               //button section
 
               ListView.separated(
@@ -124,6 +140,21 @@ class ProfileView extends StatelessWidget {
                       },
                       itemBuilder: (context, index) {
                         return ListTile(
+                          onTap: () {
+                            switch (index) {
+                              case 0:
+                                Get.to(const OrderView());
+                                break;
+
+                              case 1:
+                                Get.to(const WishlistView());
+                                break;
+
+                              case 2:
+                                Get.to(const MessageView());
+                                break;
+                            }
+                          },
                           title: profileButtonList[index]
                               .text
                               .fontFamily(semibold)

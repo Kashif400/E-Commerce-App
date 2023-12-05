@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:e_commerce_app/View/chat/chat_view.dart';
 import 'package:e_commerce_app/component/round_button.dart';
 import 'package:e_commerce_app/consts/colors.dart';
 import 'package:e_commerce_app/consts/firebase_const.dart';
@@ -18,7 +19,7 @@ class ItemDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var controller = Get.find<ProductController>();
+    var controller = Get.put(ProductController());
     return PopScope(
       canPop: true,
       onPopInvoked: (bool isDidPop) async {
@@ -31,6 +32,7 @@ class ItemDetails extends StatelessWidget {
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
               controller.restValue();
+              Get.back();
             },
           ),
           title: title!.text.fontFamily(bold).color(darkFontGrey).make(),
@@ -40,11 +42,25 @@ class ItemDetails extends StatelessWidget {
                 icon: const Icon(
                   Icons.share,
                 )),
-            IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.favorite_outline,
-                ))
+            Obx(
+              () => IconButton(
+                  onPressed: () {
+                    print(controller.isFav.value);
+                    if (controller.isFav.value) {
+                      controller.removeFromWishlist(data.id, context);
+                      controller.isFav(false);
+                    } else {
+                      controller.addToWishlist(data.id, context);
+                      controller.isFav(true);
+                    }
+                  },
+                  icon: Icon(
+                    controller.isFav.value
+                        ? Icons.favorite
+                        : Icons.favorite_outline,
+                    color: controller.isFav.value ? redColor : darkFontGrey,
+                  )),
+            ),
           ],
         ),
         body: Column(
@@ -127,7 +143,10 @@ class ItemDetails extends StatelessWidget {
                             Icons.message_rounded,
                             color: darkFontGrey,
                           ),
-                        )
+                        ).onTap(() {
+                          Get.to(ChatView(),
+                              arguments: [data['p_seller'], data['vendor_id']]);
+                        })
                       ],
                     )
                         .box
@@ -326,15 +345,23 @@ class ItemDetails extends StatelessWidget {
             RoundButton(
               title: 'Add to Cart',
               onTap: () async {
-                controller.addToCart(
-                    title: data['p_name'],
-                    image: data['p_images'][1],
-                    sellername: data['p_seller'],
-                    color: data['p_colors'][controller.colorIndex.value],
-                    tprice: controller.totalPrice.value,
-                    qty: controller.quantity.value,
-                    context: context);
-                VxToast.show(context, msg: 'add to card');
+                if (controller.quantity.value > 0) {
+                  await controller.addToCart(
+                      title: data['p_name'],
+                      vendorId: data['vendor_id'],
+                      image: data['p_images'][1],
+                      sellername: data['p_seller'],
+                      color: data['p_colors'][controller.colorIndex.value],
+                      tprice: controller.totalPrice.value,
+                      qty: controller.quantity.value,
+                      context: context);
+                  // ignore: use_build_context_synchronously
+                  VxToast.show(context, msg: 'add to card');
+                  // ignore: use_build_context_synchronously
+                  Navigator.pop(context);
+                } else {
+                  VxToast.show(context, msg: 'Minumum  1 product is required');
+                }
               },
               textColor: whiteColor,
               btnColor: redColor,

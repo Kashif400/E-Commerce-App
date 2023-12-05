@@ -1,8 +1,5 @@
 import 'package:e_commerce_app/View/auth/login_view.dart';
-import 'package:e_commerce_app/View/category/item_detail.dart';
 import 'package:e_commerce_app/View/home/home.dart';
-import 'package:e_commerce_app/View/profile/profile_edit_view.dart';
-import 'package:e_commerce_app/View/profile/profile_view.dart';
 import 'package:e_commerce_app/consts/firebase_const.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +35,8 @@ class MyApp extends StatelessWidget {
             backgroundColor: Colors.transparent,
           ),
           fontFamily: regular),
-      home: currentUser != null ? Home() : LoginView(),
+      // home: currentUser != null ? const Home() : const LoginView(),
+      home: LoginView(),
     );
   }
 }

@@ -11,61 +11,90 @@ import 'package:velocity_x/velocity_x.dart';
 
 import '../../consts/styles.dart';
 
-class CategoryDetail extends StatelessWidget {
+class CategoryDetail extends StatefulWidget {
   final String title;
   const CategoryDetail({super.key, required this.title});
 
   @override
+  State<CategoryDetail> createState() => _CategoryDetailState();
+}
+
+class _CategoryDetailState extends State<CategoryDetail> {
+  var controller = Get.find<ProductController>();
+  dynamic productMethod;
+
+  @override
+  void initState() {
+    switchCategory(widget.title);
+    super.initState();
+  }
+
+  switchCategory(title) {
+    if (controller.subcat.contains(title)) {
+      productMethod = FirestoreServices.getSubCategoryProducts(title);
+    } else {
+      productMethod = FirestoreServices.getProducts(category: title);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    var controller = Get.find<ProductController>();
     return bgWidght(
         child: Scaffold(
             appBar: AppBar(
-              title: title.text.fontFamily(bold).white.make(),
+              title: widget.title.text.fontFamily(bold).white.make(),
             ),
-            body: StreamBuilder(
-              stream: FirestoreServices.getProducts(category: title),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (!snapshot.hasData) {
-                  return const Center(
-                    child: CircularProgressIndicator(
-                      color: redColor,
+            body: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: List.generate(
+                          controller.subcat.length,
+                          (index) => "${controller.subcat[index]}"
+                                  .text
+                                  .fontFamily(semibold)
+                                  .color(darkFontGrey)
+                                  .makeCentered()
+                                  .box
+                                  .white
+                                  .roundedSM
+                                  .padding(const EdgeInsets.all(10))
+                                  .margin(
+                                      const EdgeInsets.symmetric(horizontal: 4))
+                                  .make()
+                                  .onTap(() {
+                                switchCategory('${controller.subcat[index]}');
+                                setState(() {});
+                              })),
                     ),
-                  );
-                } else if (snapshot.data!.docs.isEmpty) {
-                  return Center(
-                    child:
-                        "No Products founds!".text.color(darkFontGrey).make(),
-                  );
-                } else {
-                  var data = snapshot.data!.docs;
-                  return Container(
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: List.generate(
-                                controller.subcat.length,
-                                (index) => "${controller.subcat[index]}"
-                                    .text
-                                    .fontFamily(semibold)
-                                    .color(darkFontGrey)
-                                    .makeCentered()
-                                    .box
-                                    .white
-                                    .roundedSM
-                                    .padding(const EdgeInsets.all(10))
-                                    .margin(const EdgeInsets.symmetric(
-                                        horizontal: 4))
-                                    .make()),
+                  ),
+                  20.heightBox,
+                  StreamBuilder(
+                    stream: productMethod,
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (!snapshot.hasData) {
+                        return const Expanded(
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              color: redColor,
+                            ),
                           ),
-                        ),
-                        20.heightBox,
-                        Expanded(
+                        );
+                      } else if (snapshot.data!.docs.isEmpty) {
+                        return Expanded(
+                          child: "No Products founds!"
+                              .text
+                              .color(darkFontGrey)
+                              .makeCentered(),
+                        );
+                      } else {
+                        var data = snapshot.data!.docs;
+                        return Expanded(
                           child: GridView.builder(
                               physics: const BouncingScrollPhysics(),
                               itemCount: data.length,
@@ -120,18 +149,19 @@ class CategoryDetail extends StatelessWidget {
                                     .padding(const EdgeInsets.all(12))
                                     .make()
                                     .onTap(() {
+                                  controller.checkIfFav(data[index]);
                                   Get.to(ItemDetails(
                                     title: '${data[index]['p_name']}',
                                     data: data[index],
                                   ));
                                 });
                               }),
-                        )
-                      ],
-                    ),
-                  );
-                }
-              },
+                        );
+                      }
+                    },
+                  ),
+                ],
+              ),
             )));
   }
 }

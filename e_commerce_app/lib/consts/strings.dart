@@ -30,8 +30,8 @@ const searchAnyThing = "Search anything...",
     boysGlasses = "Boys Glasses",
     tShirts = "TShirts",
     girlsDress = "Girls Dress",
-    featureCategories = "Feature Categories";
-const featuredProduct = "Feature Product";
+    featureCategories = "Featured Categories";
+const featuredProduct = "Featured Product";
 
 //category string
 const womenClothing = "Women Dress",
@@ -54,3 +54,4 @@ const video = "Video",
 
 //profile string
 const wishlist = "My Wishlist", orders = "My Orders", messages = "Messages";
+const paypal = 'Paypal', stripe = 'Stripe', cod = 'Cash on delivery';

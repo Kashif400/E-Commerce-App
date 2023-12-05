@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../controller/home_controller.dart';
-import '../Cart/car_view.dart';
+import '../Cart/cart_view.dart';
 import 'home_view.dart';
 
 class Home extends StatelessWidget {
@@ -69,6 +69,7 @@ class Home extends StatelessWidget {
             backgroundColor: whiteColor,
             onTap: (value) {
               homeController.currentIndex.value = value;
+              homeController.searchController.value.clear();
             },
           ),
         ),
