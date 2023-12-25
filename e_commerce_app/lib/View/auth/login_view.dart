@@ -5,8 +5,8 @@ import 'package:e_commerce_app/component/bgWidget.dart';
 import 'package:e_commerce_app/component/round_button.dart';
 import 'package:e_commerce_app/consts/images.dart';
 import 'package:e_commerce_app/controller/auth_controller.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+
 import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -26,6 +26,7 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
   TextEditingController emailC = TextEditingController();
+
   TextEditingController passwordC = TextEditingController();
 
   @override
@@ -122,7 +123,7 @@ class _LoginViewState extends State<LoginView> {
                       btnColor: lightGolden,
                       title: singUp,
                       onTap: () {
-                        Get.to(const SignupView());
+                        Get.to(SignupView());
                       }),
                   const SizedBox(
                     height: 10,

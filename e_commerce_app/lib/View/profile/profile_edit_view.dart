@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+import '../../consts/colors.dart';
 import '../../consts/images.dart';
 import '../../consts/strings.dart';
 
@@ -31,11 +32,11 @@ class ProfileEditView extends StatelessWidget {
               //if data image url and profileController is empty
               data['imageUrl'] == '' &&
                       profileController.profileImagePath.isEmpty
-                  ? Image.asset(
-                      imgProfile2,
-                      width: 100,
-                      fit: BoxFit.cover,
-                    ).box.roundedFull.clip(Clip.antiAlias).make()
+                  ? const CircleAvatar(
+                      radius: 30,
+                      backgroundColor: lightGrey,
+                      child: Icon(Icons.person),
+                    )
                   : data['imageUrl'] !=
                               '' && //if data image url is not empty and profilecontroller is empty
                           profileController.profileImagePath.isEmpty
@@ -92,6 +93,10 @@ class ProfileEditView extends StatelessWidget {
                     //if image is not selected
                     if (profileController.profileImagePath.value.isNotEmpty) {
                       await profileController.uploadProfileImage();
+                      profileController.updateProfile(
+                          imageUrl: profileController.profileImageLink.value,
+                          passowrd: data['password'],
+                          name: data['name']);
                     } else {
                       profileController.profileImageLink.value =
                           data['imageUrl'];
@@ -113,6 +118,15 @@ class ProfileEditView extends StatelessWidget {
                           passowrd:
                               profileController.newPasswordController.text,
                           imageUrl: profileController.profileImageLink.value);
+                      VxToast.show(context, msg: 'Update');
+                    } else if (profileController
+                            .oldPasswordController.text.isEmptyOrNull &&
+                        profileController
+                            .newPasswordController.text.isEmptyOrNull) {
+                      await profileController.updateProfile(
+                          imageUrl: profileController.profileImageLink,
+                          name: profileController.nameController.text.trim(),
+                          passowrd: data['password']);
                       VxToast.show(context, msg: 'Update');
                     } else {
                       VxToast.show(context, msg: 'Wrong old password');

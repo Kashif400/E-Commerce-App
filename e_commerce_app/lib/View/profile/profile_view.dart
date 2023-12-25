@@ -8,7 +8,6 @@ import 'package:e_commerce_app/component/bgWidget.dart';
 import 'package:e_commerce_app/component/cart_detail_widget.dart';
 import 'package:e_commerce_app/consts/colors.dart';
 import 'package:e_commerce_app/consts/firebase_const.dart';
-import 'package:e_commerce_app/consts/images.dart';
 import 'package:e_commerce_app/consts/list.dart';
 import 'package:e_commerce_app/consts/styles.dart';
 import 'package:e_commerce_app/controller/auth_controller.dart';
@@ -58,14 +57,14 @@ class ProfileView extends StatelessWidget {
                 child: Row(
                   children: [
                     data['imageUrl'] == ''
-                        ? Image.asset(
-                            imgProfile2,
-                            width: 100,
-                            fit: BoxFit.cover,
-                          ).box.roundedFull.clip(Clip.antiAlias).make()
+                        ? const CircleAvatar(
+                            radius: 30,
+                            backgroundColor: whiteColor,
+                            child: Icon(Icons.person),
+                          )
                         : Image.network(
                             data['imageUrl'],
-                            width: 100,
+                            width: 80,
                             fit: BoxFit.cover,
                           ).box.roundedFull.clip(Clip.antiAlias).make(),
                     10.widthBox,
@@ -87,7 +86,7 @@ class ProfileView extends StatelessWidget {
                             side: const BorderSide(color: whiteColor)),
                         onPressed: () async {
                           await Get.put(AuthController().signoutMethod());
-                          Get.offAll(const LoginView());
+                          Get.offAll(LoginView());
                         },
                         child: "Logout".text.fontFamily(semibold).white.make())
                   ],

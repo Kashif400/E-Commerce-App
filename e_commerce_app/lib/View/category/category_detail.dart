@@ -20,7 +20,7 @@ class CategoryDetail extends StatefulWidget {
 }
 
 class _CategoryDetailState extends State<CategoryDetail> {
-  var controller = Get.find<ProductController>();
+  var controller = Get.put(ProductController());
   dynamic productMethod;
 
   @override
